@@ -30,8 +30,7 @@ export interface ChatThreadSearchHit {
 
 export interface ChatThreadSettingsInput {
   title?: string | null;
-  styleId: string;
-  systemPrompt: string;
+  personalityId: string;
   providerId: string | null;
   pinned: boolean;
 }

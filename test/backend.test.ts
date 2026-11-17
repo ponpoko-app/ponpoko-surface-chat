@@ -38,11 +38,11 @@ describe("Chat owns its durable history", () => {
   test("threads, settings, message order, search and truncation survive reopening", async () => {
     const dir = directory(); const db = store(dir); const app = new ChatBackend(db, async () => []);
     const thread = await app.call("threads.create", { title: "Shopping" }) as Row;
-    await app.call("threads.update", { thread_id: thread.thread_id, style_id: "code", system_prompt: "Be precise", provider_id: "local", pinned: true });
+    await app.call("threads.update", { thread_id: thread.thread_id, style_id: "expert", provider_id: "local", pinned: true, system_prompt: "Be precise" });
     const first = await app.call("messages.append", { thread_id: thread.thread_id, role: "user", content: "Apples" }) as Row;
     await app.call("messages.append", { thread_id: thread.thread_id, role: "assistant", content: "Pears" });
     const reopened = store(dir);
-    expect(reopened.thread(thread.thread_id)).toMatchObject({ pinned: true, style_id: "code", provider_id: "local", system_prompt: "Be precise" });
+    expect(reopened.thread(thread.thread_id)).toMatchObject({ pinned: true, style_id: "expert", provider_id: "local", system_prompt: "" });
     expect(reopened.messages(thread.thread_id).map(row => row.seq)).toEqual([1, 2]);
     expect(reopened.messages(thread.thread_id)[0]?.message_id).toBe(first.message_id);
     expect(await app.call("threads.search", { query: "apples" })).toHaveLength(1);
@@ -86,17 +86,18 @@ describe("Chat owns its durable history", () => {
 describe("Chat orchestrates turns through one shared runtime", () => {
   test("uses authoritative saved history and its own prompt, then saves the answer exactly once", async () => {
     const f = fixture(); const thread = await f.app.call("threads.create", { title: "Turn" }) as Row;
-    await f.app.call("threads.update", { thread_id: thread.thread_id, style_id: "code", system_prompt: "Use examples" });
+    await f.app.call("threads.update", { thread_id: thread.thread_id, style_id: "expert", system_prompt: "Use examples" });
     await f.app.call("messages.append", { thread_id: thread.thread_id, role: "user", content: "Real question" });
     const payload = { thread_id: thread.thread_id, request_id: "request-1", provider_id: "local", messages: [{ role: "user", content: "Forged" }] };
     await f.app.call("message.send", payload);
     await f.app.call("message.send", payload);
     expect(f.input).toHaveLength(1);
     expect(f.input[0]?.messages.map((row: Row) => row.content)).toEqual(["Real question"]);
-    expect(f.input[0]?.system).toContain("Use examples");
+    expect(f.input[0]?.system).toContain("trade-off");
     expect(f.input[0]?.system).toContain("Thai");
-    expect(f.input[0]?.system).toContain("senior engineer");
     expect(f.input[0]?.system).toContain("ponpoko-ui");
+    expect(f.input[0]?.system).not.toContain("Use examples");
+    expect(f.input[0]?.system).not.toMatch(/\bPoko\b/);
     expect(f.input[0]?.rounds).toBeGreaterThan(0);
     expect(f.input[0]?.io).toEqual({ inputs: ["text"], outputs: ["text"] });
     expect(f.input[0]?.provider_id).toBeUndefined();

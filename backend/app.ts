@@ -35,8 +35,8 @@ export class ChatBackend {
       case "threads.update": {
         this.store.idle(id);
         const thread = this.store.thread(id)!;
-        this.store.run("UPDATE threads SET title=?,style_id=?,system_prompt=?,provider_id=?,pinned=?,updated_at=? WHERE thread_id=?",
-          p.title ?? thread.title, p.style_id ?? "general", p.system_prompt ?? "", p.provider_id || null, p.pinned === true ? 1 : 0, now(), id);
+        this.store.run("UPDATE threads SET title=?,style_id=?,provider_id=?,pinned=?,updated_at=? WHERE thread_id=?",
+          p.title ?? thread.title, p.style_id ?? "general", p.provider_id || null, p.pinned === true ? 1 : 0, now(), id);
         return this.store.thread(id);
       }
       case "threads.delete":

@@ -3,7 +3,7 @@ import { transcriptMarkdown } from "../chat/history";
 import { shortcutFor } from "../chat/navigation";
 import { MessageList } from "../chat/MessageList";
 import { ChatSidebar } from "../chat/ChatSidebar";
-import { PokoSetup } from "../chat/PokoSetup";
+import { ModelSetup } from "../chat/ModelSetup";
 import { ChatHeader } from "../chat/ChatHeader";
 import { ChatOverlays } from "../chat/ChatOverlays";
 import { ComposerBar } from "../chat/ComposerBar";
@@ -17,7 +17,7 @@ import { useThreadSearch } from "../chat/threadSearch";
 import { useToast } from "../chat/useToast";
 import { writeClipboardText } from "../lib/clipboard";
 import { chatReadiness, providerOptionLabel } from "../lib/modelLabel";
-import { resolveChatStyle } from "../lib/chatStyles";
+import { resolvePersonality } from "../lib/personality";
 import { useMediaQuery } from "../lib/mediaQuery";
 import { useChatStore } from "../store/chatStore";
 import { exportThread, openSettings, type Host } from "./host";
@@ -77,7 +77,7 @@ export function Chat(props: { host: Host }) {
   const narrow = useMediaQuery("(max-width: 900px)");
 
   const activeThread = threads?.find((thread) => thread.thread_id === threadId) ?? null;
-  const activeStyle = resolveChatStyle(activeThread?.style_id);
+  const activePersonality = resolvePersonality(activeThread?.style_id);
   const threadProviderId = activeThread?.provider_id ?? null;
   const effectiveProviderId =
     threadProviderId && providers?.some((p) => p.provider_id === threadProviderId)
@@ -293,7 +293,7 @@ export function Chat(props: { host: Host }) {
           narrow={narrow}
           thread={activeThread}
           messageCount={messages.length}
-          styleName={activeStyle.name}
+          personalityName={activePersonality.name}
           modelLabel={modelLabel}
           titleEditing={titleEditing}
           titleDraft={titleDraft}
@@ -326,7 +326,7 @@ export function Chat(props: { host: Host }) {
           readiness={readiness}
           setup={
             configured ? undefined : (
-              <PokoSetup
+              <ModelSetup
                 host={host}
                 notify={(message) => {
                   notify(message);

@@ -1,8 +1,12 @@
 # Chat — a Ponpoko surface
 
-Chat is the conversation you have with Poko, installed as a surface instead of shipped inside
-the app. It has its own repository, its own lockfile, its own build and its own tests: it builds
+Chat is a general-purpose conversation, installed as a surface instead of shipped inside the
+app. It has its own repository, its own lockfile, its own build and its own tests: it builds
 from a checkout of itself and from nothing else.
+
+It has no character of its own. The system prompt it sends is a neutral assistant plus the
+personality the human picked from a short preset list — no free-text prompt box, no mascot
+backstory, no house persona.
 
 ```sh
 git clone git@github.com:zurge-co/ponpoko-surface-chat.git
@@ -24,7 +28,7 @@ contribution the manifest declares.
 | Chat surface | Ponpoko Host |
 | --- | --- |
 | thread history, search, pins, settings and export in its own SQLite store | provider configuration and credentials |
-| conversation context, system prompt, turn orchestration and durable stream events | one shared AI/tool work runner, budgets, leases and checkpoints |
+| conversation context, the personality preset, system prompt, turn orchestration and durable stream events | one shared AI/tool work runner, budgets, leases and checkpoints |
 | UI, Markdown, PonpokoUI, attachments and presentation preferences | generic OS dialogs, clipboard, palette, installation and work services |
 
 `backend/` builds into `dist/bin/chat-backend`, a standalone executable with its JavaScript
@@ -63,7 +67,7 @@ src/bridge/           versioned broker client (channel, request, answer, events)
 src/contracts/        the wire contract shared by both sides: protocol, errors, row readers
 src/chat/             the conversation UI, moved out of the host and adapted
 src/ponpoko-ui/       the PonpokoUI catalogue, lexer, parser and evaluator (vendored)
-src/styles/           palette tokens, Markdown and mascot motion
+src/styles/           palette tokens, Markdown and reply motion
 test/                 broker, contract and parity proofs
 docs/                 the host protocol and where every file came from
 ```

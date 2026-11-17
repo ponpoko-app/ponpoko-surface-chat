@@ -1,6 +1,6 @@
 import { contextMessages } from "./context";
 import { ChatStore, now, type Row } from "./store";
-import { resolveChatStyle } from "../src/lib/chatStyles";
+import { resolvePersonality } from "../src/lib/personality";
 import { buildPonpokoUISystemPrompt } from "../src/ponpoko-ui/prompt";
 import { chatLanguageDirective } from "../src/lib/prompts/language";
 import type { Runtime } from "./runtime";
@@ -146,8 +146,10 @@ export class Turns {
   }
 }
 
-function systemPrompt(thread: Row, language: string, sample?: string): string {
-  return ["You are Poko, the assistant in this conversation.", resolveChatStyle(thread.style_id).preamble,
-    "When a user requests a lasting screen or tool, consult surface_recommend and create and verify an installed surface. Answer ordinary questions directly.",
-    chatLanguageDirective(language, sample), buildPonpokoUISystemPrompt(), thread.system_prompt].filter(Boolean).join("\n\n");
+export const NEUTRAL_ASSISTANT_PROMPT =
+  "You are a general-purpose assistant in a chat window. Answer the message you were given, in the register it was written, and do not adopt a persona beyond the personality this conversation selected.";
+
+export function systemPrompt(thread: Row, language: string, sample?: string): string {
+  return [NEUTRAL_ASSISTANT_PROMPT, resolvePersonality(thread.style_id).preamble,
+    chatLanguageDirective(language, sample), buildPonpokoUISystemPrompt()].filter(Boolean).join("\n\n");
 }

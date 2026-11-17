@@ -13,7 +13,7 @@ import {
   X,
 } from "lucide-react";
 import type { ChatThreadSearchHit, ChatThreadView, ChatProviderView } from "../contracts/types";
-import { styleLabel } from "../lib/chatStyles";
+import { personalityLabel } from "../lib/personality";
 import { providerOptionLabel } from "../lib/modelLabel";
 import { formatRelativeTime } from "../lib/time";
 import { groupThreads } from "./navigation";
@@ -207,7 +207,7 @@ export function ThreadRail(props: {
       </div>
 
       <div className="shrink-0 border-t border-border px-2.5 py-2.5">
-        <p className="truncate font-mono text-xs text-fg-muted" title="The model Poko thinks with">
+        <p className="truncate font-mono text-xs text-fg-muted" title="The model that answers in this chat">
           {activeModel}
         </p>
         <p className="mt-1.5 text-xs leading-relaxed text-fg-muted/70">
@@ -243,7 +243,7 @@ function ThreadRow(props: {
   );
   const streaming = entries.some((entry) => !entry.error);
   const failed = entries.some((entry) => entry.error);
-  const style = styleLabel(thread.style_id);
+  const personality = personalityLabel(thread.style_id);
 
   const commit = () => {
     const next = text.trim();
@@ -316,7 +316,7 @@ function ThreadRow(props: {
             </span>
           ) : (
             <span className="mt-0.5 flex items-center gap-1 pl-[0.1rem] text-xs text-fg-muted/80">
-              <span className="rounded-full border border-border px-1 text-xs">{style}</span>
+              <span className="rounded-full border border-border px-1 text-xs">{personality}</span>
               {props.model && (
                 <span className="max-w-[7rem] truncate font-mono text-xs text-fg-muted/70">
                   {props.model}

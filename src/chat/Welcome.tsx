@@ -1,11 +1,11 @@
 import type { ReactNode } from "react";
 import { Blocks, Palette, Settings2 } from "lucide-react";
 import { openSettings, type Host } from "../app/host";
-import { pokoGreeting, pokoNeedsSetup, type PokoReadiness } from "../lib/poko";
-import { PokoVoice } from "./Poko";
+import { assistantGreeting, assistantNeedsSetup, type Readiness } from "../lib/identity";
+import { AssistantVoice } from "./Assistant";
 
 export const SETTINGS_DOORS = [
-  { id: "model", label: "Chat model", hint: "The provider, key and model Poko thinks with" },
+  { id: "model", label: "Chat model", hint: "The provider, key and model this chat answers with" },
   { id: "surfaces", label: "Surfaces", hint: "Install and remove surfaces" },
   { id: "palette", label: "Palette", hint: "The colours Ponpoko draws with" },
 ] as const;
@@ -47,14 +47,14 @@ export function SettingsDoors(props: { host: Host; onError: (message: string) =>
 
 export function Welcome(props: {
   host: Host;
-  readiness: PokoReadiness;
+  readiness: Readiness;
   setup?: ReactNode;
   onError: (message: string) => void;
 }) {
-  const needsSetup = pokoNeedsSetup(props.readiness);
+  const needsSetup = assistantNeedsSetup(props.readiness);
   return (
     <div className="mx-auto flex w-full max-w-2xl flex-col items-center px-2 pt-12 text-center">
-      <PokoVoice text={pokoGreeting(props.readiness)} />
+      <AssistantVoice text={assistantGreeting(props.readiness)} />
       {props.readiness === null ? null : needsSetup ? (
         props.setup
       ) : (

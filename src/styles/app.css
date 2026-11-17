@@ -222,17 +222,17 @@ body {
   }
 }
 
-@keyframes poko-breathe {
+@keyframes assistant-breathe {
   0%, 100% { transform: scale(1); }
   50% { transform: scale(1.06); }
 }
 
-@keyframes poko-rise {
+@keyframes assistant-rise {
   from { opacity: 0; transform: translateY(4px); }
   to { opacity: 1; transform: none; }
 }
 
-@keyframes poko-dot {
+@keyframes assistant-pulse {
   0%, 80%, 100% { opacity: 0.25; transform: translateY(0) scale(0.85); }
   40% { opacity: 1; transform: translateY(-2px) scale(1); }
 }
@@ -249,30 +249,30 @@ body {
   65% { opacity: 1; }
 }
 
-.poko-avatar {
-  animation: poko-breathe 4.5s ease-in-out infinite;
+.assistant-avatar {
+  animation: assistant-breathe 4.5s ease-in-out infinite;
 }
 
-.poko-voice,
-.poko-turn {
-  animation: poko-rise 0.24s ease-out both;
+.assistant-voice,
+.assistant-turn {
+  animation: assistant-rise 0.24s ease-out both;
 }
 
-.poko-dot {
+.assistant-dot {
   display: inline-block;
   height: 5px;
   width: 5px;
   border-radius: 9999px;
   background: var(--color-accent);
-  animation: poko-dot 1.15s ease-in-out infinite;
+  animation: assistant-pulse 1.15s ease-in-out infinite;
 }
 
-.poko-dot:nth-child(2) {
+.assistant-dot:nth-child(2) {
   animation-delay: 0.16s;
   background: var(--color-accent-lime);
 }
 
-.poko-dot:nth-child(3) {
+.assistant-dot:nth-child(3) {
   animation-delay: 0.32s;
   background: var(--color-accent-gold);
 }
@@ -286,59 +286,20 @@ body {
 }
 
 .surface-arriving .surface-blink-badge {
-  animation: poko-breathe 1.2s ease-in-out 2;
+  animation: assistant-breathe 1.2s ease-in-out 2;
 }
 
-@keyframes poko-panel-enter {
-  from { opacity: 0; transform: translateY(4px) scale(0.985); }
-  to { opacity: 1; transform: none; }
-}
-
-.poko-panel-enter {
-  animation: poko-panel-enter 190ms ease-out both;
-}
-
-.poko-panel-static {
-  animation: none;
-}
-
-.poko-phase-crossfade {
-  transition: color 240ms ease, opacity 240ms ease;
-}
-
-.poko-launcher {
-  transition:
-    border-color 160ms ease,
-    background-color 160ms ease,
-    transform 160ms ease;
-}
-
-.poko-launcher-live:hover {
-  transform: translateY(-1px);
-}
-
-.poko-launcher-still {
-  transition: border-color 160ms ease, background-color 160ms ease;
-}
-
-.poko-launcher:focus-visible {
-  outline: 2px solid var(--color-ring);
-  outline-offset: 3px;
-}
-
-html[data-poko-background="1"] .poko-avatar,
-html[data-poko-background="1"] .poko-panel-enter,
-html[data-poko-background="1"] .poko-launcher-live:hover {
+html[data-poko-background="1"] .assistant-avatar {
   animation: none;
   transition: none;
   transform: none;
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .poko-panel-enter,
-  .poko-launcher,
-  .poko-launcher-live:hover,
-  .poko-phase-crossfade {
+  .assistant-avatar,
+  .assistant-dot,
+  .assistant-voice,
+  .assistant-turn {
     animation: none;
     transition: none;
     transform: none;

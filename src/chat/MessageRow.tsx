@@ -2,8 +2,8 @@ import { useState } from "react";
 import { Pencil, RefreshCw } from "lucide-react";
 import type { PonpokoUIAction } from "../ponpoko-ui/catalog";
 import { Markdown } from "./Markdown.tsx";
-import { PokoAvatar } from "./Poko";
-import { POKO_NAME } from "../lib/poko";
+import { AssistantAvatar } from "./Assistant";
+import { ASSISTANT_NAME } from "../lib/identity";
 import { CopyButton } from "./CopyButton";
 import { formatElapsed, type ChatMessageMeta } from "./history";
 import type { ToolActivity } from "./types";
@@ -145,9 +145,9 @@ export function MessageRow(props: {
   return (
     <div className="group flex flex-col gap-1">
       <div className="flex min-h-5 items-center gap-2">
-        <PokoAvatar />
+        <AssistantAvatar />
         <span className="text-xs font-semibold uppercase tracking-[0.08em] text-fg">
-          {POKO_NAME}
+          {ASSISTANT_NAME}
         </span>
         <span className="max-w-[16rem] truncate font-mono text-xs text-fg-muted/70">
           {label}
@@ -196,7 +196,7 @@ export function MessageRow(props: {
           ))}
         </ul>
       )}
-      <div className="poko-turn select-text pl-9 text-xs leading-relaxed text-fg">
+      <div className="assistant-turn select-text pl-9 text-xs leading-relaxed text-fg">
         <Markdown
           text={props.text}
           streaming={props.streaming}

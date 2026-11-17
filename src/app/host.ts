@@ -90,8 +90,7 @@ export async function updateThread(
     await hostChat<unknown>(host, "threads.update", {
       thread_id: threadId,
       title: settings.title ?? null,
-      style_id: settings.styleId,
-      system_prompt: settings.systemPrompt,
+      style_id: settings.personalityId,
       provider_id: settings.providerId,
       pinned: settings.pinned,
     }),

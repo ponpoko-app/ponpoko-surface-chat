@@ -116,7 +116,7 @@ export function chatLanguageDirective(
   const preferred = normalizeChatLanguage(setting);
   if (preferred !== CHAT_LANGUAGE_AUTO) {
     const name = languageName(preferred);
-    return `${LANGUAGE_BLOCK}\nReply in ${name} (${preferred}). That is the language the human keeps in Ponpoko's preferences, so it holds for this whole thread even when the thread's text is written in another language.`;
+    return `${LANGUAGE_BLOCK}\nReply in ${name} (${preferred}). That is the language set in this chat's preferences, so it holds for this whole thread even when the thread's text is written in another language.`;
   }
   const detected = detectReplyLanguage(sample);
   if (detected) {

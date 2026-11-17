@@ -17,8 +17,8 @@ export function buildPaletteActions(input: {
     {
       id: "thread-settings",
       label: "Thread settings",
-      hint: "Style, model and custom instructions for this conversation",
-      keywords: "style model system instructions",
+      hint: "Personality and model for this conversation",
+      keywords: "personality style model",
       run: input.openThreadSettings,
     },
     {

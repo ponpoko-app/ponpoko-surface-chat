@@ -12,7 +12,7 @@ followed it) and is maintained here from now on. The host no longer owns these f
 | `src/chat/markdown/**` | `app/src/shell/chat/markdown/**` | unchanged |
 | `src/chat/highlight/**` | `app/src/shell/chat/highlight/**` | unchanged |
 | `src/chat/ponpoko-ui/**` | `app/src/shell/chat/ponpoko-ui/**` | import paths only |
-| `src/chat/{MessageRow,MessageList,ThreadRail,ThreadSettings,Composer,ComposerBar,ContextCard,ContextChips,CodeBlock,CopyButton,ChatHeader,ChatSidebar,ChatOverlays,CommandPalette,Welcome,Poko,PokoThinking}.tsx` | same names under `app/src/shell/chat/` | imports repointed at `../contracts/types` and this bundle's own lib |
+| `src/chat/{MessageRow,MessageList,ThreadRail,ThreadSettings,Composer,ComposerBar,ContextCard,ContextChips,CodeBlock,CopyButton,ChatHeader,ChatSidebar,ChatOverlays,CommandPalette,Welcome,Assistant,AssistantThinking}.tsx` | same names under `app/src/shell/chat/` (the mascot components arrived as `Poko*`) | imports repointed at `../contracts/types` and this bundle's own lib; the mascot identity became a neutral assistant |
 | `src/chat/{context,history,navigation,streamBuffer,titles,types,a11y,paste,useToast}.ts` | same names | unchanged; still client-only |
 | `src/styles/app.css` | `app/src/index.css` | the palette tokens, `.md-content`, syntax classes and the mascot motion only; the host shell's layout rules stayed behind |
 
@@ -32,11 +32,11 @@ laws are proven on this side of the move.
 | `src/chat/useChatThreads.ts` | same name | `listen("chat://…")` became `broker.onEvent`; storage preferences moved to `src/lib/prefs.ts` |
 | `src/chat/useChatStream.ts` | same name | the stream now arrives as broker events; the system prompt is composed by the host, not here |
 | `src/chat/useChatContext.ts` | same name | file dialogs, drag-and-drop and image paste became `attachments.*` operations and the host's drop control |
-| `src/chat/{Welcome,PokoSetup}.tsx` | same names | provider/key setup stays in the host: these only open the host settings window |
+| `src/chat/{Welcome,ModelSetup}.tsx` | same names (`ModelSetup` arrived as `PokoSetup`) | provider/key setup stays in the host: these only open the host settings window |
 | `src/chat/usePonpokoActions.ts` | same name | `open_external_url` became `host.platform.link.open` |
-| `src/lib/chatStyles.ts` | `app/src/lib/prompts/styles.ts` | the style list and preambles the UI shows; the backend composes the actual system prompt |
+| `src/lib/personality.ts` | `app/src/lib/prompts/styles.ts` | the preset personality list and preambles the UI shows; the backend composes the actual system prompt from the chosen preset |
 | `src/lib/modelLabel.ts` | `app/src/lib/modelSetup.ts` | provider display metadata only — never a credential |
-| `src/lib/{poko,time,theme,mediaQuery,clipboard,prefs}.ts` | same names under `app/src/lib/` | unchanged or trimmed to what a surface needs |
+| `src/lib/{identity,time,theme,mediaQuery,clipboard,prefs}.ts` | same names under `app/src/lib/` (`identity` arrived as `poko`) | unchanged or trimmed to what a surface needs; the identity strings no longer name a mascot |
 
 ## Deliberately left in the host
 

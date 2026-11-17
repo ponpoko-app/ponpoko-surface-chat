@@ -80,7 +80,7 @@ function actionSection(): string {
   ).join("\n\n");
 }
 
-export const PONPOKO_UI_CHAT_ONLY = `This fence is how the conversation shows something. It is not a surface: a surface is a bundle the human installs in the tab bar, and it outlives the reply. When the human asks for a screen, a tool or anything that must still exist tomorrow, build a surface — never answer a request for one with a program here.`;
+export const PONPOKO_UI_CHAT_ONLY = `This fence is how a reply shows something inside the conversation: it renders here and is not saved as a file or run later. Use it to present an answer — a card, table, diff, chart, steps, callout or follow-up button — and keep the prose that explains it outside the block.`;
 
 let cached: string | null = null;
 

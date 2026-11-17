@@ -13,7 +13,7 @@ export function ChatHeader(props: {
   narrow: boolean;
   thread: ChatThreadView | null;
   messageCount: number;
-  styleName: string;
+  personalityName: string;
   modelLabel: string;
   titleEditing: boolean;
   titleDraft: string;
@@ -108,13 +108,13 @@ export function ChatHeader(props: {
         onClick={props.onOpenSettings}
         title={
           thread
-            ? "Thread settings — style, model and custom instructions"
-            : "Start a conversation, then configure its style and model"
+            ? "Thread settings — personality and model"
+            : "Start a conversation, then choose its personality and model"
         }
         className="flex shrink-0 items-center gap-1.5 rounded-full border border-border bg-panel/60 px-2.5 py-1 text-xs text-fg-muted transition-colors hover:border-accent hover:text-fg disabled:opacity-40"
       >
         <SlidersHorizontal size={11} />
-        {props.styleName}
+        {props.personalityName}
       </button>
       {props.modelLabel && (
         <span

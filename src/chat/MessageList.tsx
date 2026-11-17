@@ -3,11 +3,11 @@ import type { ReactNode, RefObject } from "react";
 import type { Host } from "../app/host";
 import { ArrowDown } from "lucide-react";
 import type { ChatMessageView } from "../contracts/types";
-import type { PokoReadiness } from "../lib/poko";
+import type { Readiness } from "../lib/identity";
 import type { PonpokoUIAction } from "../ponpoko-ui/catalog";
 import { Welcome } from "./Welcome";
 import { MessageRow } from "./MessageRow";
-import { PokoThinking } from "./PokoThinking";
+import { AssistantThinking } from "./AssistantThinking";
 import { parseChatMeta } from "./history";
 import type { InFlight } from "./types";
 
@@ -26,7 +26,7 @@ export function MessageList(props: {
   conversationId?: string | null;
   busy: boolean;
   editingId: number | null;
-  readiness: PokoReadiness;
+  readiness: Readiness;
   setup?: ReactNode;
   onRetry: (message: ChatMessageView) => void;
   onRetryLive: (requestId: string) => void;
@@ -94,9 +94,9 @@ export function MessageList(props: {
       >
         <p role="status" aria-live="polite" className="sr-only">
           {waiting
-            ? "Poko is thinking."
+            ? "The assistant is thinking."
             : streamingNow
-              ? "Poko is replying."
+              ? "The assistant is replying."
               : failedNow
                 ? "The reply stopped early; what arrived is above."
                 : ""}
@@ -136,7 +136,7 @@ export function MessageList(props: {
               ))}
               {live.map(([requestId, entry]) =>
                 !entry.error && !entry.text.trim() ? (
-                  <PokoThinking key={requestId} activities={entry.activities} />
+                  <AssistantThinking key={requestId} activities={entry.activities} />
                 ) : (
                   <MessageRow
                     key={requestId}
@@ -167,7 +167,7 @@ export function MessageList(props: {
           className="absolute bottom-3 left-1/2 flex -translate-x-1/2 items-center gap-1.5 rounded-full border border-border-strong bg-panel px-3 py-1.5 text-xs text-fg shadow-[0_8px_24px_rgba(0,0,0,0.35)] transition-colors hover:border-accent hover:text-accent"
         >
           <ArrowDown size={12} />
-          {waiting ? "Jump to Poko" : streamingNow ? "Jump to the reply" : "Jump to latest"}
+          {waiting ? "Jump to the reply" : streamingNow ? "Jump to the reply" : "Jump to latest"}
         </button>
       )}
     </div>

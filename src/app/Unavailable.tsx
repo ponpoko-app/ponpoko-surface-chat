@@ -1,4 +1,3 @@
-import { POKO_NAME } from "../lib/poko";
 import type { BootFailure } from "./boot";
 
 export function Unavailable(props: { failure: BootFailure }) {
@@ -6,7 +5,7 @@ export function Unavailable(props: { failure: BootFailure }) {
   return (
     <div className="unavailable">
       <div className="unavailable-mark" aria-hidden>
-        {POKO_NAME}
+        Chat
       </div>
       <h1>{failure.title}</h1>
       <p>{failure.detail}</p>
