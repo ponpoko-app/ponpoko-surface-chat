@@ -68,6 +68,12 @@ export class ChatStore {
   }
   list(): Row[] { return this.rows("SELECT * FROM threads ORDER BY pinned DESC, updated_at DESC, thread_id").map(row => ({ ...row, pinned: row.pinned === 1 })); }
   messages(id: string) { this.thread(id); return this.rows("SELECT message_id,seq,role,content,meta_json,created_at FROM messages WHERE thread_id=? ORDER BY seq", id); }
+  messagePage(id: string, before?: number, limit = 100) {
+    this.thread(id);
+    if (!Number.isSafeInteger(limit) || limit < 1 || limit > 200) throw new Error("Message page limit must be between 1 and 200");
+    if (before !== undefined && (!Number.isSafeInteger(before) || before < 1)) throw new Error("Message cursor must be a positive sequence");
+    return this.rows("SELECT message_id,seq,role,content,meta_json,created_at FROM messages WHERE thread_id=? AND (? IS NULL OR seq<?) ORDER BY seq DESC LIMIT ?", id, before ?? null, before ?? null, limit).reverse();
+  }
   append(id: string, role: string, content: string, meta = "") {
     if (!["system", "user", "assistant", "tool"].includes(role)) throw new Error("Invalid message role");
     return this.atomic(() => {

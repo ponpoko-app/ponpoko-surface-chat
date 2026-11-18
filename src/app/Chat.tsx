@@ -20,7 +20,7 @@ import { chatReadiness, providerOptionLabel } from "../lib/modelLabel";
 import { resolvePersonality } from "../lib/personality";
 import { useMediaQuery } from "../lib/mediaQuery";
 import { useChatStore } from "../store/chatStore";
-import { exportThread, openSettings, type Host } from "./host";
+import { allMessages, exportThread, openSettings, type Host } from "./host";
 import type {
   ChatMessageView,
   ChatThreadSearchHit,
@@ -99,7 +99,7 @@ export function Chat(props: { host: Host }) {
     retryMessage,
     retryLive,
     submitEdit,
-    cursorFor,
+    cursorFor, loadOlder, hasOlder, loadingOlder,
   } = useChatStream({
     host,
     activeId: threadId,
@@ -227,7 +227,8 @@ export function Chat(props: { host: Host }) {
 
   const copyTranscript = async () => {
     try {
-      await writeClipboardText(transcriptMarkdown(activeThread?.title ?? "", messages));
+      const history = threadId ? await allMessages(host, threadId) : messages;
+      await writeClipboardText(transcriptMarkdown(activeThread?.title ?? "", history));
       notify("Transcript copied as Markdown");
     } catch {
       setError("Could not copy — the clipboard is unavailable");
@@ -317,6 +318,8 @@ export function Chat(props: { host: Host }) {
         <MessageList
           host={host}
           messages={messages}
+          onLoadOlder={hasOlder ? loadOlder : undefined}
+          loadingOlder={loadingOlder}
           live={live}
           modelLabel={modelLabel}
           endRef={endRef}

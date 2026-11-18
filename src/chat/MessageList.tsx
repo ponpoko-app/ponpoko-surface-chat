@@ -20,6 +20,8 @@ function distanceFromBottom(node: HTMLElement): number {
 export function MessageList(props: {
   host: Host;
   messages: ChatMessageView[];
+  onLoadOlder?: () => Promise<void>;
+  loadingOlder?: boolean;
   live: [string, InFlight][];
   modelLabel: string;
   endRef: RefObject<HTMLDivElement | null>;
@@ -102,6 +104,21 @@ export function MessageList(props: {
                 : ""}
         </p>
         <div className="mx-auto flex w-full max-w-[46rem] flex-col gap-5 sm:gap-6">
+          {props.onLoadOlder && (
+            <button type="button" className="min-h-11 rounded-lg border border-border px-3 text-sm text-fg-muted" disabled={props.loadingOlder}
+              onClick={() => {
+                const node = scrollRef.current;
+                if (!node) return;
+                const height = node.scrollHeight;
+                const top = node.scrollTop;
+                setAtBottom(false);
+                void props.onLoadOlder!().then(() => requestAnimationFrame(() => {
+                  if (scrollRef.current === node) node.scrollTop = top + node.scrollHeight - height;
+                }));
+              }}>
+              {props.loadingOlder ? "Loading older messages…" : "Load older messages"}
+            </button>
+          )}
           {showEmpty ? (
             <Welcome host={host} readiness={readiness} setup={setup} onError={onError} />
           ) : (

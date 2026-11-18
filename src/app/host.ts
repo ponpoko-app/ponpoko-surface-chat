@@ -104,8 +104,22 @@ export async function exportThread(host: Host, threadId: string): Promise<string
   return result.path;
 }
 
-export async function listMessages(host: Host, threadId: string): Promise<ChatMessageView[]> {
-  return readMessages(await hostChat<unknown>(host, "messages.list", { thread_id: threadId }));
+export async function listMessages(host: Host, threadId: string, beforeSeq?: number): Promise<ChatMessageView[]> {
+  return readMessages(await hostChat<unknown>(host, "messages.list", { thread_id: threadId, before_seq: beforeSeq, limit: 100 }));
+}
+
+export async function allMessages(host: Host, threadId: string): Promise<ChatMessageView[]> {
+  let result = await listMessages(host, threadId);
+  let before = result[0]?.seq ?? 1;
+  while (before > 1) {
+    const page = await listMessages(host, threadId, before);
+    if (page.length === 0) break;
+    const next = page[0]!.seq;
+    if (next >= before) throw new Error("Message history did not advance");
+    result = [...page, ...result];
+    before = next;
+  }
+  return result;
 }
 
 export async function appendMessage(

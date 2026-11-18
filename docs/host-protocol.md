@@ -51,3 +51,12 @@ ordering, settings, metadata and timestamps in one transaction and records a mig
 Conflicts or storage failures are reported; no import is marked complete after rollback.
 Uninstall/reinstall never removes this directory. The Host database is not used for ongoing
 conversation reads or writes after import.
+
+## Message history pages
+
+`messages.list` returns the latest 100 messages in ascending sequence order.
+`before_seq` requests messages strictly older than a sequence; `limit` is an
+integer from 1 through 200. An empty page ends pagination. Newer messages do not
+move an existing older-page cursor. The transcript loads older pages on request;
+copy and export retain the complete conversation. Runtime context is constructed
+by the backend from its durable history, independently of the visible page.

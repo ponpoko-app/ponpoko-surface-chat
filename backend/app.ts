@@ -57,7 +57,7 @@ export class ChatBackend {
         writeFileSync(path, body, { encoding: "utf8" });
         return { path };
       }
-      case "messages.list": return this.store.messages(id);
+      case "messages.list": return this.store.messagePage(id, p.before_seq, p.limit ?? 100);
       case "messages.append":
         this.store.idle(id);
         return this.store.append(id, text(p.role, "role"), typeof p.content === "string" ? p.content : "");

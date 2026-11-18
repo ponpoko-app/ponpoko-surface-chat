@@ -174,3 +174,28 @@ test("stream snapshots expose existing work without restarting it and cursors st
   expect(await f.app.call("stream.snapshot", { thread_id: one.thread_id })).toMatchObject({ cursor: 1, active: { request_id: "existing", partial: "Already received" } });
   expect(f.input).toHaveLength(0);
 });
+
+
+test("message pages are bounded, ordered and cursor-stable while new messages arrive", async () => {
+  const db = store();
+  const app = new ChatBackend(db, async () => []);
+  const thread = await app.call("threads.create", {title:"Long conversation"}) as Row;
+  db.atomic(() => { for (let seq = 1; seq <= 350; seq++) db.append(thread.thread_id, seq % 2 ? "user" : "tool", `message ${seq}`); });
+  const latest = await app.call("messages.list", {thread_id:thread.thread_id}) as Row[];
+  expect(latest.map(row => row.seq)).toEqual(Array.from({length:100}, (_, i) => i + 251));
+  db.append(thread.thread_id, "assistant", "new message");
+  const older = await app.call("messages.list", {thread_id:thread.thread_id, before_seq:latest[0]!.seq, limit:100}) as Row[];
+  expect(older.map(row => row.seq)).toEqual(Array.from({length:100}, (_, i) => i + 151));
+  const seen = [...older, ...latest];
+  let before = older[0]!.seq;
+  while (before > 1) {
+    const page = await app.call("messages.list", {thread_id:thread.thread_id,before_seq:before,limit:100}) as Row[];
+    expect(page.length).toBeLessThanOrEqual(100);
+    before = page[0]!.seq;
+    seen.unshift(...page);
+  }
+  expect(seen.map(row => row.seq)).toEqual(Array.from({length:350}, (_, i) => i + 1));
+  await expect(app.call("messages.list", {thread_id:thread.thread_id,limit:201})).rejects.toThrow();
+  await expect(app.call("messages.list", {thread_id:thread.thread_id,before_seq:-1})).rejects.toThrow();
+  expect(db.messages(thread.thread_id)).toHaveLength(351);
+});

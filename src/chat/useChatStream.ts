@@ -98,10 +98,35 @@ export function useChatStream(input: ChatStreamInput) {
   const deltas = useMemo(() => createDeltaBatcher({ onFlush: applyDeltas }), [applyDeltas]);
   useEffect(() => () => deltas.flush(), [deltas]);
 
+  const [loadingOlder, setLoadingOlder] = useState(false);
+  const [olderExhausted, setOlderExhausted] = useState<string | null>(null);
+  const historyGeneration = useRef(0);
+  useEffect(() => { historyGeneration.current += 1; setOlderExhausted(null); setLoadingOlder(false); }, [activeId]);
+  const loadOlder = useCallback(async () => {
+    if (!activeId || loadingOlder || olderExhausted === activeId) return;
+    const generation = historyGeneration.current;
+    const before = messages[0]?.seq;
+    if (before === undefined) return;
+    setLoadingOlder(true);
+    try {
+      const page = await listMessages(host, activeId, before);
+      if (generation !== historyGeneration.current) return;
+      if (page.length === 0) setOlderExhausted(activeId);
+      setMessages(current => {
+        const ids = new Set(current.map(message => message.message_id));
+        return [...page.filter(message => !ids.has(message.message_id)), ...current];
+      });
+    } catch (error) { if (generation === historyGeneration.current) setError(String(error)); }
+    finally { if (generation === historyGeneration.current) setLoadingOlder(false); }
+  }, [activeId, host, loadingOlder, messages, olderExhausted, setError, setMessages]);
+  const hasOlder = activeId !== olderExhausted && (messages[0]?.seq ?? 1) > 1;
+
   const loadMessages = useCallback(
     async (threadId: string) => {
       try {
-        setMessages(await listMessages(host, threadId));
+        const rows = await listMessages(host, threadId);
+        if (threadId !== activeIdRef.current) return;
+        setMessages(previous => [...previous.filter(row => row.seq < (rows[0]?.seq ?? Infinity)), ...rows]);
       } catch (e) {
         setError(String(e));
       }
@@ -371,5 +396,5 @@ export function useChatStream(input: ChatStreamInput) {
     ? Object.entries(inFlight).filter(([, entry]) => entry.threadId === activeId)
     : [];
 
-  return { inFlight, sending, streaming, live, send, stopStream, retryMessage, retryLive, submitEdit, cursorFor };
+  return { inFlight, sending, streaming, live, send, stopStream, retryMessage, retryLive, submitEdit, cursorFor, loadOlder, hasOlder, loadingOlder };
 }
