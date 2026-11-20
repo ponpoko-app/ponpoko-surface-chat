@@ -9,7 +9,7 @@ personality the human picked from a short preset list — no free-text prompt bo
 backstory, no house persona.
 
 ```sh
-git clone git@github.com:zurge-co/ponpoko-surface-chat.git
+git clone git@github.com:ponpoko-app/ponpoko-surface-chat.git
 cd ponpoko-surface-chat
 bun install --ignore-scripts
 bun run typecheck
